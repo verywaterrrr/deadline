@@ -4,14 +4,23 @@ import { parseWebworkSchedule } from '../../../src/sources/webwork.mjs';
 const url = Deno.env.get('SUPABASE_URL')!;
 const service = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {auth:{persistSession:false}});
 const owner = Deno.env.get('APP_OWNER_ID');
-const cronSecret = Deno.env.get('CRON_SECRET');
+// Supabase Cron supplies the project's default secret key in the apikey header.
+// The gateway JWT check must be disabled only when this check is deployed.
+const secretKeys = JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS') || '{}');
+const schedulerKey = typeof secretKeys.default === 'string' ? secretKeys.default : '';
+function matchesSecret(actual: string, expected: string) {
+ if (!actual || !expected || actual.length !== expected.length) return false;
+ let difference = 0;
+ for (let i = 0; i < actual.length; i++) difference |= actual.charCodeAt(i) ^ expected.charCodeAt(i);
+ return difference === 0;
+}
 const cors = {'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info', 'Access-Control-Allow-Methods':'POST, OPTIONS'};
 const reply = (status:number, data:unknown) => new Response(JSON.stringify(data), {status, headers:{...cors,'Content-Type':'application/json'}});
 Deno.serve(async req => {
  if(req.method==='OPTIONS') return new Response(null,{status:204,headers:cors});
  if(req.method!=='POST') return reply(405,{error:'method_not_allowed'});
  if(!owner) return reply(503,{error:'not_configured'});
- const scheduled = !!cronSecret && req.headers.get('x-cron-secret') === cronSecret;
+ const scheduled = matchesSecret(req.headers.get('apikey') || '', schedulerKey);
  if(!scheduled){
   const token = req.headers.get('authorization')?.replace(/^Bearer\s+/i,'');
   if(!token) return reply(401,{error:'unauthorized'});
