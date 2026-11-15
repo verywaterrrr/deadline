@@ -1,0 +1,2 @@
+[functions.refresh-webwork]
+verify_jwt = false

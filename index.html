@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f5f6f8"><title>Deadlines</title><link rel="stylesheet" href="style.css"><script type="module" src="/app.js"></script></head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">✓</div><div><strong>Deadlines</strong></div><span class="brand-menu">···</span></div>
+    <nav class="nav" aria-label="Main navigation"></nav>
+    <div class="sidebar-bottom"><div class="sources-title"><span>Sources</span><span class="demo-pill"></span></div><div id="sources"></div><p class="sync-note"></p></div>
+  </aside>
+  <main class="main"><div class="mobile-brand"><strong>Deadlines</strong><span class="demo-pill"></span></div>
+    <div class="topbar"><div class="breadcrumb"><span class="preview-label">Not connected</span><b id="crumb">Schedule</b></div><div class="top-actions"><button class="icon-btn" id="refresh" aria-label="Refresh sources" title="Refresh sources"></button><button class="add-button" id="add"><span>＋</span> <span class="add-text">New assignment</span></button></div></div>
+    <div class="content" id="content"></div>
+    <div class="mobile-sources"><div class="sources-title"><span>Sources</span><span class="demo-pill"></span></div><div id="mobile-sources"></div><p class="sync-note"></p></div><footer>All times HKT</footer>
+  </main>
+</div>
+<nav class="mobile-nav" aria-label="Mobile navigation"></nav>
+<dialog id="add-dialog"><form id="add-form"><div class="dialog-head"><div><h2>New Assignment</h2><p></p></div><button type="button" class="icon-btn close" aria-label="Close">×</button></div><label>Title<input name="title" placeholder="Assignment name" required maxlength="120"></label><label>Course<input name="course" placeholder="e.g. ECON2103"></label><fieldset class="date-fields"><legend>Due date <span class="optional">Optional</span></legend><label>Month<input name="month" type="number" inputmode="numeric" min="1" max="12" placeholder="MM"></label><label>Day<input name="day" type="number" inputmode="numeric" min="1" max="31" placeholder="DD"></label><small>The year is chosen automatically.</small><span class="date-error" role="alert"></span></fieldset><label>Due time <span class="optional">Optional</span><input name="time" type="time"></label><label>Link <span class="optional">Optional</span><input name="link" type="url" placeholder="https://"></label><label>Notes <span class="optional">Optional</span><textarea name="notes" rows="2" placeholder="Add a note"></textarea></label><p class="form-hint">Your changes sync across devices.</p><button class="add-button submit" type="submit">Add Assignment</button></form></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body></html>
