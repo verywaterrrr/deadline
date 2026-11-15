@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Deadline Zinc Connector",
+  "version": "1.0.0",
+  "description": "Read COMP1023 deadlines from your signed-in Zinc session.",
+  "permissions": ["tabs", "alarms"],
+  "host_permissions": ["https://zinc.cse.ust.hk/*", "https://api.zinc.cse.ust.hk/*", "https://verywaterrrr.github.io/deadline/*"],
+  "background": {"service_worker": "background.js"},
+  "content_scripts": [
+    {"matches": ["https://zinc.cse.ust.hk/*"], "js": ["zinc.js"]},
+    {"matches": ["https://verywaterrrr.github.io/deadline/*"], "js": ["dashboard.js"]}
+  ]
+}
