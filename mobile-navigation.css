@@ -23,3 +23,5 @@
 @supports not (backdrop-filter:blur(1px)){.mobile-nav{background:#f2f3f6}@media(prefers-color-scheme:dark){.mobile-nav{background:#303035}}}
 @media(prefers-reduced-motion:reduce){.mobile-nav-indicator{transition:none}}
 @media(prefers-reduced-transparency:reduce){.mobile-nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:#f2f3f6}}
+
+.sidebar-bottom[hidden],.mobile-sources[hidden]{display:none!important}
