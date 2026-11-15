@@ -1,2 +1,5 @@
 [functions.refresh-webwork]
 verify_jwt = false
+
+[functions.refresh-canvas]
+verify_jwt = false
