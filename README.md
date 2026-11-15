@@ -5,9 +5,9 @@ A personal deadline dashboard with a calendar, schedule, overdue and completed l
 ## Current source coverage
 
 - Manual assignments and checklist changes are stored in Supabase.
-- The WeBWorK importer is prepared but requires deployment and configuration. It reads the public schedule for MATH1013 and only sees sets currently listed as open. Previously imported entries are retained.
+- The WeBWorK importer is deployed and manual refresh has been verified. It reads the public schedule for MATH1013 and only sees sets currently listed as open. Previously imported entries are retained.
 - Canvas and Zinc connections are not configured yet.
-- Automatic daily refresh is not configured yet. A successful Pages deployment does not enable source refreshes.
+- Automatic daily refresh is not configured yet. Supabase Cron is installed, but a scheduled job still needs secure authentication and verification.
 
 ## Development
 
