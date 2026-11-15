@@ -61,10 +61,10 @@ let pageAnimations=[];
 function navigateView(next){
  const previous=view,content=byId('content'),mobile=window.matchMedia('(max-width: 800px)').matches;
  pageAnimations.forEach(animation=>animation.cancel());pageAnimations=[];document.querySelector('.page-transition-ghost')?.remove();
- let ghost=null;const oldRect=content.getBoundingClientRect();
+ let ghost=null;const viewport=content.parentElement,oldRect=content.getBoundingClientRect(),viewportRect=viewport.getBoundingClientRect();
  if(mobile&&!reduced()){
   ghost=content.cloneNode(true);ghost.removeAttribute('id');ghost.classList.add('page-transition-ghost');ghost.inert=true;ghost.setAttribute('aria-hidden','true');
-  Object.assign(ghost.style,{top:`${oldRect.top}px`,left:`${oldRect.left}px`,width:`${oldRect.width}px`});document.body.append(ghost);
+  Object.assign(ghost.style,{top:`${oldRect.top-viewportRect.top}px`,left:`${oldRect.left-viewportRect.left}px`,width:`${oldRect.width}px`});viewport.append(ghost);
  }
  const oldIndex=mobileTabs.indexOf(mobileTab(previous)),newIndex=mobileTabs.indexOf(mobileTab(next));
  const direction=newIndex===oldIndex?(next==='others'?-1:1):(newIndex>oldIndex?1:-1);
