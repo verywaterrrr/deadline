@@ -1,13 +1,46 @@
 {
   "manifest_version": 3,
-  "name": "Deadline Zinc Connector",
-  "version": "1.0.0",
-  "description": "Read COMP1023 deadlines from your signed-in Zinc session.",
-  "permissions": ["tabs", "alarms"],
-  "host_permissions": ["https://zinc.cse.ust.hk/*", "https://api.zinc.cse.ust.hk/*", "https://verywaterrrr.github.io/deadline/*"],
-  "background": {"service_worker": "background.js"},
+  "name": "Deadline Connector",
+  "version": "1.1.0",
+  "description": "Sync COMP1023 and your daily report to Deadline.",
+  "permissions": [
+    "tabs",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://zinc.cse.ust.hk/*",
+    "https://api.zinc.cse.ust.hk/*",
+    "https://verywaterrrr.github.io/deadline/*",
+    "https://chatgpt.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
-    {"matches": ["https://zinc.cse.ust.hk/*"], "js": ["zinc.js"]},
-    {"matches": ["https://verywaterrrr.github.io/deadline/*"], "js": ["dashboard.js"]}
+    {
+      "matches": [
+        "https://zinc.cse.ust.hk/*"
+      ],
+      "js": [
+        "zinc.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://verywaterrrr.github.io/deadline/*"
+      ],
+      "js": [
+        "dashboard.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/c/6a907813-3f50-83e9-abcf-cc1d4f32871b*",
+        "https://chatgpt.com/c/6ae54b04-9f24-83e8-b9c8-8326e2f9ec67*"
+      ],
+      "js": [
+        "brief.js"
+      ]
+    }
   ]
 }

@@ -14,3 +14,12 @@ window.addEventListener('message', event => {
 chrome.runtime.onMessage.addListener((message, sender) => {
   if (sender.id === chrome.runtime.id && message?.type === 'DAILY_ZINC') window.postMessage({type:'DEADLINE_ZINC_DAILY'},location.origin);
 });
+window.addEventListener('message',event=>{
+  if(event.source!==window || event.origin!==location.origin || event.data?.type!=='DEADLINE_READ_BRIEF')return;
+  const requestId=event.data.requestId;
+  if(typeof requestId!=='string'||requestId.length>100)return;
+  chrome.runtime.sendMessage({type:'READ_BRIEF'},result=>window.postMessage({type:'DEADLINE_BRIEF_RESULT',requestId,result:result||{ok:false,error:'Connector unavailable'}},location.origin));
+});
+chrome.runtime.onMessage.addListener((message,sender)=>{
+  if(sender.id===chrome.runtime.id&&message?.type==='DAILY_BRIEF')window.postMessage({type:'DEADLINE_BRIEF_DAILY'},location.origin);
+});
