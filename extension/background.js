@@ -46,14 +46,15 @@ chrome.runtime.onMessage.addListener((message,sender,respond)=>{
   (async()=>{
     const reports=[];
     for(const url of REPORT_URLS){
-      let tab;
+      let tab,created=false;
       try {
-        tab=await chrome.tabs.create({url,active:false});await waitForLoad(tab.id);
+        const existing=await chrome.tabs.query({url:url+'*'});tab=existing[0];
+        if(!tab){tab=await chrome.tabs.create({url,active:false});created=true;await waitForLoad(tab.id);}
         for(let attempt=0;attempt<12;attempt++){
           try { const result=await chrome.tabs.sendMessage(tab.id,{type:'READ_BRIEF'}); if(result?.ok){reports.push(result.report);break} } catch (_) {}
           await new Promise(resolve=>setTimeout(resolve,1000));
         }
-      } catch (_) {} finally {if(tab?.id) await chrome.tabs.remove(tab.id).catch(()=>{});}
+      } catch (_) {} finally {if(created && tab?.id) await chrome.tabs.remove(tab.id).catch(()=>{});}
     }
     reports.sort((a,b)=>Date.parse(b.generatedAt)-Date.parse(a.generatedAt));
     respond(reports.length?{ok:true,report:reports[0]}:{ok:false,error:'Open your report in signed-in Chrome and try again.'});

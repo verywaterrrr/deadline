@@ -7,14 +7,14 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
     const generatedAt = turn.querySelector('time[datetime]')?.getAttribute('datetime');
     return [...turn.querySelectorAll('[data-response-body]')].flatMap(body => {
       const root = body.querySelector('[data-dil-response]') || body.querySelector('[data-markdown-text-style="assistant-message"]');
-      if (!root || !generatedAt || !root.innerText.trimStart().startsWith('Hi Arvin, here is ur summary for today:')) return [];
+      if (!root || !generatedAt || !(root.innerText || root.textContent || "").trimStart().startsWith('Hi Arvin, here is ur summary for today:')) return [];
       const sections=[]; let section=null;
       for (const node of root.children) {
-        const text=(node.innerText||'').trim(); if (!text) continue;
+        const text=(node.innerText||node.textContent||'').trim(); if (!text) continue;
         if (/^H[1-6]$/.test(node.tagName)) { section={heading:text,items:[]}; sections.push(section); continue; }
         if (!section) continue;
         if (/^(UL|OL)$/.test(node.tagName)) {
-          for (const li of node.children) if(li.innerText.trim()) section.items.push(li.innerText.trim());
+          for (const li of node.children) {const text=(li.innerText||li.textContent||'').trim();if(text) section.items.push(text);}
         } else section.items.push(text);
       }
       const id=body.getAttribute('data-response-body');
