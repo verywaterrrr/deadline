@@ -3,7 +3,7 @@ import {importZinc,failZinc} from './store.js';
 export async function refreshZinc() {
   const requestId = crypto.randomUUID();
   const available = await new Promise(resolve => {
-    const timeout = setTimeout(() => {window.removeEventListener('message', receive); resolve(false)}, 500);
+    const timeout = setTimeout(() => {window.removeEventListener('message', receive); resolve(false)}, 5000);
     function receive(event) {
       if(event.source!==window || event.origin!==location.origin || event.data?.type!=='DEADLINE_CONNECTOR_PONG' || event.data.requestId!==requestId) return;
       clearTimeout(timeout);window.removeEventListener('message',receive);resolve(true);
@@ -11,7 +11,7 @@ export async function refreshZinc() {
     window.addEventListener('message',receive);
     window.postMessage({type:'DEADLINE_CONNECTOR_PING',requestId},location.origin);
   });
-  if(!available) throw Error('Zinc connector is not installed');
+  if(!available){await failZinc().catch(()=>{});throw Error('Zinc connector is unavailable')}
   const result = await new Promise(resolve => {
     const timeout = setTimeout(() => {window.removeEventListener('message', receive); resolve(null)}, 30000);
     function receive(event) {
