@@ -126,3 +126,16 @@ window.addEventListener('message',event=>{if(event.source!==window||event.origin
 window.addEventListener('message',event=>{if(event.source!==window||event.origin!==location.origin||event.data?.type!=='DEADLINE_BRIEF_DAILY')return;let attempts=0;const start=async()=>{if(!ready){if(attempts++<30)setTimeout(start,1000);return}try{brief=await syncBrief();render()}catch{}};start()});
 
 window.addEventListener('message',event=>{if(event.source!==window||event.origin!==location.origin||event.data?.type!=='DEADLINE_SOURCES_DAILY')return;let attempts=0;const start=()=>{if(!ready){if(attempts++<30)setTimeout(start,1000);return}if(!byId('refresh').disabled)byId('refresh').click()};start()});
+
+// Only a dashboard with the installed connector claims queued server checks.
+if(location.origin==='https://verywaterrrr.github.io')setInterval(async()=>{
+ if(!ready||byId('refresh').disabled)return;
+ const requestId=crypto.randomUUID();
+ const connected=await new Promise(resolve=>{
+  const timeout=setTimeout(()=>{window.removeEventListener('message',receive);resolve(false)},3000);
+  function receive(event){if(event.source!==window||event.origin!==location.origin||event.data?.type!=='DEADLINE_CONNECTOR_PONG'||event.data.requestId!==requestId)return;clearTimeout(timeout);window.removeEventListener('message',receive);resolve(true)}
+  window.addEventListener('message',receive);window.postMessage({type:'DEADLINE_CONNECTOR_PING',requestId},location.origin);
+ });
+ if(!connected)return;
+ try{const current=await session();if(!current?.access_token)return;const response=await fetch('https://16.178.242.184.sslip.io/api/claim',{method:'POST',headers:{Authorization:`Bearer ${current.access_token}`}});if(response.ok&&(await response.json()).run)byId('refresh').click()}catch{}
+},15000);
