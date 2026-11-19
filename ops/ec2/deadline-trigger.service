@@ -1,0 +1,10 @@
+[Unit]
+Description=Deadline owner refresh relay
+After=network-online.target
+[Service]
+User=ec2-user
+EnvironmentFile=/etc/deadline/trigger.env
+ExecStart=/usr/bin/node /srv/deadline/repo/ops/ec2/trigger.mjs
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

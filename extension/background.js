@@ -80,3 +80,17 @@ chrome.alarms.onAlarm.addListener(async alarm=>{
   if(!tab){tab=await chrome.tabs.create({url:DASHBOARD,active:false});await waitForLoad(tab.id)}
   if(tab?.id)await chrome.tabs.sendMessage(tab.id,{type:'DAILY_BRIEF'}).catch(()=>{});
 });
+
+async function scheduleRelay(){await chrome.alarms.create('server-relay',{periodInMinutes:0.5})}
+chrome.runtime.onInstalled.addListener(scheduleRelay);
+chrome.runtime.onStartup.addListener(scheduleRelay);
+chrome.alarms.onAlarm.addListener(async alarm=>{
+ if(alarm.name!=='server-relay')return;
+ try {
+  const response=await fetch('http://127.0.0.1:4765/internal/poll',{signal:AbortSignal.timeout(4000)});
+  if(!response.ok || !(await response.json()).run)return;
+  const tabs=await chrome.tabs.query({url:DASHBOARD+'*'});let tab=tabs[0];
+  if(!tab){tab=await chrome.tabs.create({url:DASHBOARD,active:false});await waitForLoad(tab.id)}
+  if(tab?.id)await chrome.tabs.sendMessage(tab.id,{type:'DAILY_SOURCES'});
+ }catch(_){}
+});
