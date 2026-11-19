@@ -23,3 +23,7 @@ window.addEventListener('message',event=>{
 chrome.runtime.onMessage.addListener((message,sender)=>{
   if(sender.id===chrome.runtime.id&&message?.type==='DAILY_BRIEF')window.postMessage({type:'DEADLINE_BRIEF_DAILY'},location.origin);
 });
+
+chrome.runtime.onMessage.addListener((message,sender)=>{
+  if(sender.id===chrome.runtime.id&&message?.type==='DAILY_SOURCES')window.postMessage({type:'DEADLINE_SOURCES_DAILY'},location.origin);
+});

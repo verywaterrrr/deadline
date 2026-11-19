@@ -28,17 +28,20 @@ async function schedule() {
   const now = new Date();
   const hkt = new Date(now.getTime() + 8*3600000);
   let next = Date.UTC(hkt.getUTCFullYear(),hkt.getUTCMonth(),hkt.getUTCDate(),2);
+  let sourceNext=next+5*60000;
   if (next <= now.getTime()) next += 86400000;
+  if (sourceNext <= now.getTime()) sourceNext += 86400000;
   await chrome.alarms.create('zinc-daily', {when:next,periodInMinutes:1440});
+  await chrome.alarms.create('deadline-sources', {when:sourceNext,periodInMinutes:1440});
 }
 chrome.runtime.onInstalled.addListener(schedule);
 chrome.runtime.onStartup.addListener(schedule);
 chrome.alarms.onAlarm.addListener(async alarm => {
-  if (alarm.name !== 'zinc-daily') return;
+  if (!['zinc-daily','deadline-sources'].includes(alarm.name)) return;
   const tabs = await chrome.tabs.query({url:DASHBOARD+'*'});
   let tab=tabs[0];
   if(!tab){tab=await chrome.tabs.create({url:DASHBOARD,active:false});await waitForLoad(tab.id)}
-  if (tab?.id) await chrome.tabs.sendMessage(tab.id,{type:'DAILY_ZINC'}).catch(()=>{});
+  if (tab?.id) await chrome.tabs.sendMessage(tab.id,{type:alarm.name==='deadline-sources'?'DAILY_SOURCES':'DAILY_ZINC'}).catch(()=>{});
 });
 const REPORT_URLS = ['https://chatgpt.com/c/6a907813-3f50-83e9-abcf-cc1d4f32871b','https://chatgpt.com/c/6ae54b04-9f24-83e8-b9c8-8326e2f9ec67'];
 chrome.runtime.onMessage.addListener((message,sender,respond)=>{

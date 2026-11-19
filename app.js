@@ -124,3 +124,5 @@ boot();
 window.addEventListener('message',event=>{if(event.source!==window||event.origin!==location.origin||event.data?.type!=='DEADLINE_ZINC_DAILY')return;let attempts=0;const start=async()=>{if(!ready){if(attempts++<30)setTimeout(start,1000);return}try{await refreshZinc();const data=await loadAll();tasks=data.assignments.map(normalize);sourceStatus=data.status;render()}catch{try{const data=await loadAll();sourceStatus=data.status;render()}catch{}}};start()});
 
 window.addEventListener('message',event=>{if(event.source!==window||event.origin!==location.origin||event.data?.type!=='DEADLINE_BRIEF_DAILY')return;let attempts=0;const start=async()=>{if(!ready){if(attempts++<30)setTimeout(start,1000);return}try{brief=await syncBrief();render()}catch{}};start()});
+
+window.addEventListener('message',event=>{if(event.source!==window||event.origin!==location.origin||event.data?.type!=='DEADLINE_SOURCES_DAILY')return;let attempts=0;const start=()=>{if(!ready){if(attempts++<30)setTimeout(start,1000);return}if(!byId('refresh').disabled)byId('refresh').click()};start()});
