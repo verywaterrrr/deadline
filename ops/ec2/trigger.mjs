@@ -16,7 +16,7 @@ http.createServer(async(req,res)=>{
   if(!/^Bearer [A-Za-z0-9._~-]{20,}$/.test(auth))return send(res,401,{error:'unauthorized'});
   const result=await fetch(`${url}/rest/v1/rpc/is_app_owner`,{method:'POST',headers:{authorization:auth,apikey:key,'Content-Type':'application/json'},body:'{}',signal:AbortSignal.timeout(10000)});
   if(!result.ok || await result.json()!==true)return send(res,403,{error:'forbidden'});
-  if(req.url==='/api/claim'){const run=pending;pending=false;if(run)console.log('Dashboard claimed refresh');return send(res,200,{run})}
+  if(req.url==='/api/claim'){if((req.headers['x-forwarded-for']||'').split(',')[0].trim()!=='16.178.242.184')return send(res,403,{error:'wrong_worker'});const run=pending;pending=false;if(run)console.log('Dashboard claimed refresh');return send(res,200,{run})}
   pending=true;console.log('Owner requested refresh');return send(res,202,{queued:true});
  }catch{return send(res,503,{error:'unavailable'})}
 }).listen(4765,'127.0.0.1');
