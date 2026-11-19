@@ -27,3 +27,5 @@ chrome.runtime.onMessage.addListener((message,sender)=>{
 chrome.runtime.onMessage.addListener((message,sender)=>{
   if(sender.id===chrome.runtime.id&&message?.type==='DAILY_SOURCES')window.postMessage({type:'DEADLINE_SOURCES_DAILY'},location.origin);
 });
+// Keep the server relay responsive while the dashboard is open on the EC2 desktop.
+setInterval(()=>{chrome.runtime.sendMessage({type:'POLL_SERVER_RELAY'},()=>void chrome.runtime.lastError)},15000);

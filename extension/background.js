@@ -94,3 +94,13 @@ chrome.alarms.onAlarm.addListener(async alarm=>{
   if(tab?.id)await chrome.tabs.sendMessage(tab.id,{type:'DAILY_SOURCES'});
  }catch(_){}
 });
+chrome.runtime.onMessage.addListener((message,sender,respond)=>{
+ if(sender.id!==chrome.runtime.id||!sender.tab?.url?.startsWith(DASHBOARD)||message?.type!=='POLL_SERVER_RELAY')return;
+ (async()=>{
+  const response=await fetch('http://127.0.0.1:4765/internal/poll',{signal:AbortSignal.timeout(4000)});
+  const result=await response.json();
+  if(result.run)await chrome.tabs.sendMessage(sender.tab.id,{type:'DAILY_SOURCES'});
+  respond({ok:true});
+ })().catch(()=>respond({ok:false}));
+ return true;
+});
