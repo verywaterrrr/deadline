@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Deadline Connector",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Sync COMP1023 and your daily report to Deadline.",
   "permissions": [
     "tabs",
@@ -12,7 +12,7 @@
     "https://api.zinc.cse.ust.hk/*",
     "https://verywaterrrr.github.io/deadline/*",
     "https://chatgpt.com/*",
-    "http://127.0.0.1:4765/*"
+    "http://127.0.0.1/*"
   ],
   "background": {
     "service_worker": "background.js"
